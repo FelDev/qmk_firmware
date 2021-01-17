@@ -318,6 +318,12 @@ void oled_task_user(void) {
             oled_write_ln_P(PSTR("Undefined"), false);
     }
 
+    // Host Keyboard LED Status
+    led_t led_state = host_keyboard_led_state();
+    // oled_write_P(led_state.num_lock ? PSTR("NUM ") : PSTR("    "), false);
+    oled_write_P(led_state.caps_lock ? PSTR("CAPS LOCK!!!") : PSTR("                    "), false);
+    // oled_write_P(led_state.scroll_lock ? PSTR("SCR ") : PSTR("    "), false);
+
     // If you want to change the display of OLED, you need to change here
       // oled_write_ln(read_layer_state(), false);
       // oled_write_ln(read_keylog(), false);
