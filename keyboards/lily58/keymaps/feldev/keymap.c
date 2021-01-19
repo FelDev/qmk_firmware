@@ -26,10 +26,11 @@ uint32_t anim_sleep = 0;
 uint8_t current_idle_frame = 0;
 uint8_t current_tap_frame = 0;
 extern uint8_t is_master;
-static long int oled_timeout = 600000; // 10 minutes
+static long int oled_timeout = 60000; // 600000 == 10 minutes
 
 enum custom_keycodes {
   STRIPE = SAFE_RANGE,
+  HUGOEND,
 };
 
 enum layer_number {
@@ -115,7 +116,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_MACROS] = LAYOUT(\
   KC_TRNS,      KC_TRNS,      KC_TRNS,      KC_TRNS,      KC_TRNS,      KC_TRNS,                          KC_TRNS,      KC_TRNS,     KC_TRNS,      KC_TRNS,       KC_TRNS,      KC_TRNS, \
   KC_TRNS,      KC_TRNS,      KC_TRNS,      KC_TRNS,      KC_TRNS,      KC_TRNS,                          KC_TRNS,      KC_TRNS,     KC_TRNS,      KC_TRNS,       KC_TRNS,      KC_TRNS, \
-  KC_TRNS,      KC_TRNS,      KC_TRNS,      KC_TRNS,      KC_TRNS,      KC_TRNS,                          KC_TRNS,      STRIPE,      KC_TRNS,      KC_TRNS,       KC_TRNS,      KC_TRNS, \
+  KC_TRNS,      KC_TRNS,      KC_TRNS,      KC_TRNS,      KC_TRNS,      KC_TRNS,                          KC_TRNS,      STRIPE,      HUGOEND,      KC_TRNS,       KC_TRNS,      KC_TRNS, \
   KC_TRNS,      KC_TRNS,      KC_TRNS,      KC_TRNS,      KC_TRNS,      KC_TRNS,   KC_TRNS,     KC_TRNS,  KC_TRNS,      KC_TRNS,     KC_TRNS,      KC_TRNS,       KC_TRNS,      KC_TRNS, \
                                 KC_TRNS,      KC_TRNS,      KC_TRNS,      KC_TRNS,                KC_TRNS,      KC_TRNS,      KC_TRNS,      KC_TRNS \
   ),
@@ -348,6 +349,11 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     case STRIPE:
       if (record->event.pressed) {
         SEND_STRING("4242424242424242");
+      }
+      break;
+    case HUGOEND:
+      if (record->event.pressed) {
+        SEND_STRING("1,2 1,2 patate poil maudit cave gneggnenegnene");
       }
       break;
   }
