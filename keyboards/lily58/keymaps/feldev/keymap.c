@@ -53,7 +53,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_ESC,       KC_1,         KC_2,         KC_3,        KC_4,        KC_5,                             KC_6,       KC_7,         KC_8,            KC_9,           KC_0,            KC_CAPSLOCK, \
   KC_TAB,       KC_Q,         KC_W,         KC_E,        KC_R,        KC_T,                             KC_Y,       KC_U,         KC_I,            KC_O,           KC_P,            TG(4), \
   KC_TAB,       LT(8,KC_A),   LT(7,KC_S),   LT(6,KC_D),  LT(3,KC_F),  KC_G,                             KC_H,       KC_J,         LT(1,KC_K),      LT(2,KC_L),     KC_SCLN,         KC_ENT, \
-  KC_LSFT,      LCTL_T(KC_Z), LALT_T(KC_X), LGUI_T(KC_C),LSFT_T(KC_V),KC_B,  TG(6),    LCA(LGUI(KC_S)), KC_N,       LSFT_T(KC_M), LGUI_T(KC_COMM), LALT_T(KC_DOT), LCTL_T(KC_SLSH), KC_BSPC, \
+  KC_LSFT,      LCTL_T(KC_Z), LALT_T(KC_X), LGUI_T(KC_C),LSFT_T(KC_V),KC_B,  LCA(LGUI(KC_S)),    TG(6), KC_N,       LSFT_T(KC_M), LGUI_T(KC_COMM), LALT_T(KC_DOT), LCTL_T(KC_SLSH), KC_BSPC, \
                                   KC_ENT,        KC_LALT,      KC_LGUI,    KC_SPC,          KC_RSFT,     MO(5),     TG(5),      KC_RGUI \
   ),
 
