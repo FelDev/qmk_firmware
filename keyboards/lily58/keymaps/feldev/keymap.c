@@ -47,6 +47,76 @@ enum layer_number {
   _ADJUST,
 };
 
+typedef struct {
+  bool is_press_action;
+  int state;
+} tap;
+
+enum {
+  SINGLE_TAP = 1,
+  SINGLE_HOLD = 2,
+  DOUBLE_TAP = 3,
+  DOUBLE_HOLD = 4,
+  TRIPLE_TAP = 5,
+  TRIPLE_HOLD = 6
+};
+
+// Tap Dance Declarations
+enum {
+  TD_RSHFT = 0
+};
+int cur_dance (qk_tap_dance_state_t *state);
+void alt_finished (qk_tap_dance_state_t *state, void *user_data);
+void alt_reset (qk_tap_dance_state_t *state, void *user_data);
+
+int cur_dance (qk_tap_dance_state_t *state) {
+  if (state->count == 1) {
+    if (state->pressed) return SINGLE_HOLD;
+    else return SINGLE_TAP;
+  }
+  else if (state->count == 2) {
+    if (state->pressed) return DOUBLE_HOLD;
+    else return DOUBLE_TAP;
+  }
+  else if (state->count == 3) {
+    if (state->interrupted || !state->pressed)  return TRIPLE_TAP;
+    else return TRIPLE_HOLD;
+  }
+  else return 8; // why 8 ? why return at all?
+}
+
+static tap alttap_state = {
+  .is_press_action = true,
+  .state = 0
+};
+
+void alt_finished (qk_tap_dance_state_t *state, void *user_data) {
+  alttap_state.state = cur_dance(state);
+  switch (alttap_state.state) { 
+    case SINGLE_TAP: set_oneshot_layer(_ACCENT, ONESHOT_START); clear_oneshot_layer_state(ONESHOT_PRESSED); break;
+    case SINGLE_HOLD: register_code(KC_RSFT); break;
+    case DOUBLE_TAP: set_oneshot_layer(_ACCENT, ONESHOT_START); clear_oneshot_layer_state(ONESHOT_PRESSED); break;
+    case DOUBLE_HOLD: register_code(KC_RSFT); layer_on(0); break;
+    //Last case is for fast typing. Assuming your key is `f`:
+    //For example, when typing the word `buffer`, and you want to make sure that you send `ff` and not `Esc`.
+    //In order to type `ff` when typing fast, the next character will have to be hit within the `TAPPING_TERM`, which by default is 200ms.
+  }
+}
+
+void alt_reset (qk_tap_dance_state_t *state, void *user_data) {
+  switch (alttap_state.state) {
+    case SINGLE_TAP: break;
+    case SINGLE_HOLD: unregister_code(KC_RSFT); break;
+    case DOUBLE_TAP: break;
+    case DOUBLE_HOLD: layer_off(_ACCENT); unregister_code(KC_RSFT); break;
+  }
+  alttap_state.state = 0;
+}
+qk_tap_dance_action_t tap_dance_actions[] = {
+  [TD_RSHFT]     = ACTION_TAP_DANCE_FN_ADVANCED(NULL,alt_finished, alt_reset)
+};
+
+
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 
 	[_QWERTY] = LAYOUT( \
@@ -54,7 +124,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   KC_TAB,       KC_Q,         KC_W,         HYPR_T(KC_E),KC_R,        KC_T,                             KC_Y,       KC_U,         HYPR_T(KC_I),    KC_O,           KC_P,            TG(4), \
   KC_TAB,       LT(8,KC_A),   LT(7,KC_S),   LT(6,KC_D),  LT(3,KC_F),  KC_G,                             KC_H,       LT(7,KC_J),   LT(1,KC_K),      LT(2,KC_L),     KC_SCLN,         KC_ENT, \
   KC_LSFT,      LCTL_T(KC_Z), LALT_T(KC_X), LGUI_T(KC_C),SFT_T(KC_V), KC_B,  LCA(LGUI(KC_S)),    TG(6), KC_N,       LSFT_T(KC_M), LGUI_T(KC_COMM), LALT_T(KC_DOT), LCTL_T(KC_SLSH), KC_BSPC, \
-                                  KC_ENT,        KC_LALT,      KC_LGUI,    KC_SPC,          KC_RSFT,     MO(5),     TG(5),      KC_RGUI \
+                                  KC_ENT,        KC_LALT,      KC_LGUI,    KC_SPC,          TD(TD_RSHFT),     MO(5),     TG(5),      KC_RGUI \
   ),
 
   [_CODE] = LAYOUT( \
